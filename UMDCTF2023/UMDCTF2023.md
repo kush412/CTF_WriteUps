@@ -119,7 +119,7 @@ The first one is to force the `systemInfo()` function to return the string `"Dev
 
 The second way is forcing `Intrinsics.areEqual(systemInfo(), "Devon Corporation")` return true.
 
-First one solution:
+The first solution:
 
 ```jsx
 setTimeout(function () {
@@ -145,7 +145,7 @@ frida -U -f com.example.pokeballescape -l .\escape.js
 
 ![Untitled](UMDCTF2023/Untitled%2010.png)
 
-The second way:
+The second one:
 
 ```jsx
 setTimeout(function () {
