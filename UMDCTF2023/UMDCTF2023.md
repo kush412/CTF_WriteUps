@@ -13,15 +13,15 @@ Great resource: https://github.com/tsug0d/AndroidMobilePentest101
 
 ## **Who's That Pokemon?**
 
-![Untitled](UMDCTF2023%208f16c24b34fc49c78b5cb14b5f3fc6cd/Untitled.png)
+![Untitled](UMDCTF2023/Untitled.png)
 
 Put the apk file into jadx and we can read most parts of the application’s source code but we want to focus only on the MainActivity.
 
-![Untitled](UMDCTF2023%208f16c24b34fc49c78b5cb14b5f3fc6cd/Untitled%201.png)
+![Untitled](UMDCTF2023/Untitled%201.png)
 
 Skim through the code, we can see a sussy function that will decrypt something with an if-else condition.
 
-![Untitled](UMDCTF2023%208f16c24b34fc49c78b5cb14b5f3fc6cd/Untitled%202.png)
+![Untitled](UMDCTF2023/Untitled%202.png)
 
 The code snippet can simply understand that the `getGuessString()` function returns the same value as the `companion.getCorrectString()` function, the application will decrypt, decode, and then render an image that is potentially our flag. Let’s hook it with Frida:
 
@@ -54,19 +54,19 @@ setTimeout(function () {
 frida -U -f com.example.whosthatpokemon -l .\pokemon.js
 ```
 
-![Untitled](UMDCTF2023%208f16c24b34fc49c78b5cb14b5f3fc6cd/Untitled%203.png)
+![Untitled](UMDCTF2023/Untitled%203.png)
 
 Type ‘1’ in the input field and click Guess, Frida returns the result as the image below:
 
-![Untitled](UMDCTF2023%208f16c24b34fc49c78b5cb14b5f3fc6cd/Untitled%204.png)
+![Untitled](UMDCTF2023/Untitled%204.png)
 
 We can see the function that gets our input is called and the function that gets the correct string is called. What we can do now is type in the correct string and get the flag or we can force the boolean `Intrinsics.areEqual(getGuessString(), companion.getCorrectString());` return true.
 
 I will do both ways. First one, input the correct string:
 
-![Untitled](UMDCTF2023%208f16c24b34fc49c78b5cb14b5f3fc6cd/Untitled%205.png)
+![Untitled](UMDCTF2023/Untitled%205.png)
 
-![Untitled](UMDCTF2023%208f16c24b34fc49c78b5cb14b5f3fc6cd/Untitled%206.png)
+![Untitled](UMDCTF2023/Untitled%206.png)
 
 Or forcing the boolean function return true:
 
@@ -103,15 +103,15 @@ setTimeout(function () {
 }, 1000);
 ```
 
-![Untitled](UMDCTF2023%208f16c24b34fc49c78b5cb14b5f3fc6cd/Untitled%207.png)
+![Untitled](UMDCTF2023/Untitled%207.png)
 
 ## **Pokeball Escape**
 
-![Untitled](UMDCTF2023%208f16c24b34fc49c78b5cb14b5f3fc6cd/Untitled%208.png)
+![Untitled](UMDCTF2023/Untitled%208.png)
 
 Static analysis the application with Jadx:
 
-![Untitled](UMDCTF2023%208f16c24b34fc49c78b5cb14b5f3fc6cd/Untitled%209.png)
+![Untitled](UMDCTF2023/Untitled%209.png)
 
 To solve this challenge we can also have 2 ways to approach the flag.
 
@@ -143,7 +143,7 @@ setTimeout(function () {
 frida -U -f com.example.pokeballescape -l .\escape.js
 ```
 
-![Untitled](UMDCTF2023%208f16c24b34fc49c78b5cb14b5f3fc6cd/Untitled%2010.png)
+![Untitled](UMDCTF2023/Untitled%2010.png)
 
 The second way:
 
@@ -177,41 +177,41 @@ setTimeout(function () {
 frida -U -f com.example.pokeballescape -l .\escape.js
 ```
 
-![Untitled](UMDCTF2023%208f16c24b34fc49c78b5cb14b5f3fc6cd/Untitled%2011.png)
+![Untitled](UMDCTF2023/Untitled%2011.png)
 
 ## **JNIdorino**
 
-![Untitled](UMDCTF2023%208f16c24b34fc49c78b5cb14b5f3fc6cd/Untitled%2012.png)
+![Untitled](UMDCTF2023/Untitled%2012.png)
 
 Static analysis the application with Jadx:
 
-![Untitled](UMDCTF2023%208f16c24b34fc49c78b5cb14b5f3fc6cd/Untitled%2013.png)
+![Untitled](UMDCTF2023/Untitled%2013.png)
 
 This application uses the Java Native Interface (JNI) to load a native library called "jnidorino". Let’s check how many native is defined by finding all the strings contain ‘public final native’:
 
-![Untitled](UMDCTF2023%208f16c24b34fc49c78b5cb14b5f3fc6cd/Untitled%2014.png)
+![Untitled](UMDCTF2023/Untitled%2014.png)
 
 There are exact 500 results found. Now we will extract the apk and we can find the native libs.
 
-![Untitled](UMDCTF2023%208f16c24b34fc49c78b5cb14b5f3fc6cd/Untitled%2015.png)
+![Untitled](UMDCTF2023/Untitled%2015.png)
 
 I prefer x86_64 arch so I will use IDA64 to open the lib/x86_64/libjnidorino.so. Open String subview and search for all strings starting with ‘Java_’. We can see 501 strings starting with ‘Java_’ and those strings represent all the native functions that will be loaded into the application.
 
-![Untitled](UMDCTF2023%208f16c24b34fc49c78b5cb14b5f3fc6cd/Untitled%2016.png)
+![Untitled](UMDCTF2023/Untitled%2016.png)
 
 It is obvious that there is 1 extra function in the native lib and our mission is to find out which function is not yet defined. By using sort, uniq, and diff, the extra function has been found.
 
-![Untitled](UMDCTF2023%208f16c24b34fc49c78b5cb14b5f3fc6cd/Untitled%2017.png)
+![Untitled](UMDCTF2023/Untitled%2017.png)
 
-![Untitled](UMDCTF2023%208f16c24b34fc49c78b5cb14b5f3fc6cd/Untitled%2018.png)
+![Untitled](UMDCTF2023/Untitled%2018.png)
 
-![Untitled](UMDCTF2023%208f16c24b34fc49c78b5cb14b5f3fc6cd/Untitled%2019.png)
+![Untitled](UMDCTF2023/Untitled%2019.png)
 
-![Untitled](UMDCTF2023%208f16c24b34fc49c78b5cb14b5f3fc6cd/Untitled%2020.png)
+![Untitled](UMDCTF2023/Untitled%2020.png)
 
 ## Flamecamp
 
-![Untitled](UMDCTF2023%208f16c24b34fc49c78b5cb14b5f3fc6cd/Untitled%2021.png)
+![Untitled](UMDCTF2023/Untitled%2021.png)
 
 Static analysis:
 
@@ -303,13 +303,13 @@ Java.perform(function () {
 });
 ```
 
-![Untitled](UMDCTF2023%208f16c24b34fc49c78b5cb14b5f3fc6cd/Untitled%2022.png)
+![Untitled](UMDCTF2023/Untitled%2022.png)
 
 The result of the `firebaseAuth.signInWithEmailAndPassword(getEmailString(), getPasswordString())` function is a task ***`(com.google.android.gms.tasks.zzw@d2ff739)`***, and since the application throws an error indicator ***`"@string/signInError"`*** confirms that `task.isSuccessful() == false`
 
 Follow the ***`com.google.android.gms.tasks.zzw`*** class library, we can find the `isSuccessful()` function that will override the `com.google.android.gms.tasks.Task`
 
-![Untitled](UMDCTF2023%208f16c24b34fc49c78b5cb14b5f3fc6cd/Untitled%2023.png)
+![Untitled](UMDCTF2023/Untitled%2023.png)
 
 Hook the `isSuccessful()` with Frida:
 
@@ -335,7 +335,7 @@ Java.perform(function () {
 });
 ```
 
-![Untitled](UMDCTF2023%208f16c24b34fc49c78b5cb14b5f3fc6cd/Untitled%2024.png)
+![Untitled](UMDCTF2023/Untitled%2024.png)
 
 The result is quite obviously, now let’s try to force the `isSuccessful()` function always return `true`
 
@@ -363,19 +363,19 @@ Java.perform(function () {
 
 Right after the SIGN-IN button is clicked, the application is crashed.
 
-![Untitled](UMDCTF2023%208f16c24b34fc49c78b5cb14b5f3fc6cd/Untitled%2025.png)
+![Untitled](UMDCTF2023/Untitled%2025.png)
 
 The log shows that we are not authenticated, therefore we are unable to download the file. So the problem is how we can get authenticated and successfully gain the token to be able to download the file. That question is bugging me until the CTF is over and the author admits that:
 
-![Untitled](UMDCTF2023%208f16c24b34fc49c78b5cb14b5f3fc6cd/Untitled%2026.png)
+![Untitled](UMDCTF2023/Untitled%2026.png)
 
 And yes, I was so stupid and try to complex the problem by trying to `createUserWithEmailAndPassword()` 
 
-![Untitled](UMDCTF2023%208f16c24b34fc49c78b5cb14b5f3fc6cd/Untitled%2027.png)
+![Untitled](UMDCTF2023/Untitled%2027.png)
 
 Meanwhile, the function `signInAnonymously()` require no argument.
 
-![Untitled](UMDCTF2023%208f16c24b34fc49c78b5cb14b5f3fc6cd/Untitled%2028.png)
+![Untitled](UMDCTF2023/Untitled%2028.png)
 
 This is my final payload:
 
@@ -402,6 +402,6 @@ Java.perform(function () {
 });
 ```
 
-![Untitled](UMDCTF2023%208f16c24b34fc49c78b5cb14b5f3fc6cd/Untitled%2029.png)
+![Untitled](UMDCTF2023/Untitled%2029.png)
 
 Great challenges, and I learned a lot. Big thanks to the author(s).
