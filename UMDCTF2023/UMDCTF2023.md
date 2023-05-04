@@ -4,8 +4,8 @@
 
 ## Prerequisite:
 
-1. Basic knowledge about how APK applications work.
-2. Rooted APK device(s).
+1. Basic knowledge about how Android applications work.
+2. Rooted Android device(s) or Emulator (Genymotion).
 3. jadx + frida.
 4. scrcpy (optional)
 
